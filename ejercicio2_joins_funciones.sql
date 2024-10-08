@@ -169,4 +169,35 @@ En la tabla PERSONAS tenga únicamente en cuenta las personas de tipo FISICAS (F
 Ordene la consulta por apellido y nombre
 
 
+SELECT CEDULA, APELLIDO, NOMBRE, DIRECCION, TELEFONO, FECHA_NACIMIENTO
+FROM B_PERSONAS P
+WHERE TIPO_PERSONA = 'F' AND CEDULA IS NOT NULL;
+UNION
+SELECT CEDULA, APELLIDO, NOMBRE, DIRECCION,TELEFONO, FECHA_NACIM
+FROM B_EMPLEADOS
+ORDER BY APELLIDO, NOMBRE;
+
+
+
+El área de CREDITOS Y COBRANZAS solicita un informe de las ventas a crédito efectuadas en el año 2018 y 
+cuyas cuotas tienen atraso en el pago. A las cuotas que se encuentran en dicha situación se le aplica una tasa 
+de interés del 0.5% por cada día de atraso.
+Se considera que una cuota está en mora cuando ya pasó la fecha de vencimiento y no 
+existe aún pago alguno. Se pide mostrar los siguientes datos y ordenar de forma descendente por días de atraso.
+
+
+SELECT V.NUMERO_FACTURA, E.NOMBRE ||' '|| E.APELLIDO AS EMPLEADO, 
+DECODE(P.TIPO_PERSONA,'F',P.CEDULA,'J',P.RUC,'NO TIENE DOCUMENTO') AS RUC_CI, P.NOMBRE ||' '|| P.APELLIDO AS CLIENTE,
+PP.NUMERO_CUOTA AS CUOTA, PP.VENCIMIENTO, PP.MONTO_CUOTA, TRUNC(PP.VENCIMIENTO-SYSDATE)*-1 AS "DIAS DE ATRASO",
+TO_CHAR(ROUND((PP.MONTO_CUOTA*(0.05/100)*TRUNC(PP.VENCIMIENTO-SYSDATE)*-1)),'999G999G999') AS "INTERES",
+TO_CHAR(ROUND(PP.MONTO_CUOTA+(PP.MONTO_CUOTA*(0.05/100)*TRUNC(PP.VENCIMIENTO-SYSDATE)*-1)),'999G999G999') AS "MONTO A PAGAR"
+FROM B_VENTAS V
+JOIN B_PERSONAS P
+    ON V.ID_CLIENTE = P.ID
+JOIN B_EMPLEADOS E
+    ON V.CEDULA_VENDEDOR = E.CEDULA
+JOIN B_PLAN_PAGO PP
+    ON V.ID = PP.ID_VENTA
+WHERE PP.FECHA_PAGO IS NULL;
+
 
