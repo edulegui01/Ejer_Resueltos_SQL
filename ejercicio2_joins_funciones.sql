@@ -201,3 +201,36 @@ JOIN B_PLAN_PAGO PP
 WHERE PP.FECHA_PAGO IS NULL;
 
 
+
+El Dpto. Financiero de la empresa necesita un informe de los movimientos correspondientes a
+compras y ventas efectuadas en el primer semestre del año 2011.
+El informe debe contener:
+ Fecha de la operación.
+ Concepto: Para obtener esta columna debe concatenar las expresiones y/o campos:
+ Operación: Venta o Compra de mercaderías según factura.
+ Tipo de Factura: Contado o Crédito.
+ Factura: para obtener el formato Nº 000-000-0000000, debe concatenar el número '001' +
+el id de la localidad del proveedor o cliente + el número de factura.
+Recuerde rellenar con ceros hasta alcanzar la cantidad de caracteres establecidos para
+cada grupo. Ejemplos:
+'VENTA DE MERCADERÍAS SEGÚN FACTURA CONTADO Nº 001-002-0003264'
+'COMPRA DE MERCADERÍAS SEGÚN FACTURA CREDITO Nº 001-002-0003264'  Monto Débito: Si es una compra se coloca el monto de 
+la operación, pero si es una venta se coloca 0.  Monto Crédito: 
+Si es una venta se coloca el monto de la operación, pero si es una compra se coloca 0. 
+Por último, se pide que ordene los registros por la fecha en forma ascendente.
+
+
+(SELECT FECHA, 'COMPRAS DE MERCADERIAS '|| '001-'|| LPAD(P.ID_LOCALIDAD,3,'0')|| '-'||LPAD(C.ID_CONDICION,7,'0') AS CONCEPTO,
+C.MONTO_TOTAL AS "MONTO DEBITO", 0 AS "MONTO CREDITO"
+FROM B_COMPRAS C
+JOIN B_PERSONAS P
+    ON C.ID_PROVEEDOR = P.ID)
+UNION
+(SELECT FECHA, 'VENTAS DE MERCADERIAS '|| '001-'|| LPAD(P.ID_LOCALIDAD,3,'0')|| '-'||LPAD(V.NUMERO_FACTURA,7,'0') AS CONCEPTO,
+0 AS "MONTO DEBITO", V.MONTO_TOTAL AS "MONTO CREDITO"
+FROM B_VENTAS V
+JOIN B_PERSONAS P
+    ON V.ID_CLIENTE = P.ID)
+ORDER BY FECHA DESC
+
+
