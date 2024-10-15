@@ -107,3 +107,28 @@ END;
 El programa deberá devolver el nombre del archivo físico (datafile) del tablespace. 
 Asegúrese que lee solo el primer registro encontrado (suponiendo que el tablespace tenga más de 1 datafile).
 Imprima el nombre del datafile sin el camino (PATH)
+
+
+
+6. Cree un bloque PL/SQL que dada una variable alfanumérica (cuyo valor deberá ingresarse por teclado).
+Deberá imprimir dicha variable tal como se la introdujo, y posteriormente intercambiada. Ejemplo:}
+ Si intruduce ‘123456’ deberá mostrar en pantalla ‘654321’ :
+
+
+ DECLARE
+ v_delrevez VARCHAR(20) := '';
+ v_longitud NUMBER;
+ v_cadena VARCHAR(20);
+ BEGIN
+    v_cadena:='&v_input_cadena';
+    v_longitud:=LENGTH(v_cadena);
+
+    WHILE v_longitud>=1 LOOP
+        v_delrevez:= v_delrevez||SUBSTR(v_cadena,v_longitud,1);
+        v_longitud:=v_longitud-1;
+    END LOOP;
+
+    DBMS_OUTPUT.PUT_LINE(v_cadena);
+    DBMS_OUTPUT.PUT_LINE(v_delrevez);
+END;
+    
