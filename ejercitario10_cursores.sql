@@ -73,11 +73,15 @@ DECLARE
     v_id b_personas.id%TYPE;
 BEGIN
     FOR r_local IN C_LOCALIDAD LOOP
-        DBMS_OUTPUT.PUT_LINE(r_local.nombre);
         OPEN C_CLIENTES(r_local.id);
-        FETCH C_CLIENTES INTO v_id, v_nombre, v_monto;
-        DBMS_OUTPUT.PUT_LINE(v_nombre);
-        DBMS_OUTPUT.PUT_LINE(v_monto);
+        LOOP
+            FETCH C_CLIENTES INTO v_id, v_nombre, v_monto;
+            EXIT WHEN C_CLIENTES%NOTFOUND;
+            DBMS_OUTPUT.PUT_LINE(r_local.nombre);
+            DBMS_OUTPUT.PUT_LINE(v_id);
+            DBMS_OUTPUT.PUT_LINE(v_nombre);
+            DBMS_OUTPUT.PUT_LINE(v_monto);
+        END LOOP;
         CLOSE C_CLIENTES;
     END LOOP;
 END;
